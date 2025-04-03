@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   title: "Cogni | Alzheimer Disease Risk Calculator",
   description: "A tool to help indicate whether biomarkers for Alzheimer's disease would be clinically helpful",
   icons: {
-    icon: '/logo2.png',
-    apple: '/logo2.png',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
 };
 

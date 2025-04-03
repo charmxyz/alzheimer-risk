@@ -21,7 +21,7 @@ const TEST_OPTIONS = [
     threshold: 0.067,
     positiveLR: 4.2,
     negativeLR: 0.2,
-    source: 'Based on performance relative to amyloid PET positivity, Baldeiras I, et al. (2018) - Alzheimer\'s Research & Therapy',
+    source: 'Based on performance relative to amyloid PET positivity, Baldeiras I, et al. (2018) - Alzheimer&apos;s Research & Therapy',
     sourceUrl: 'https://alzres.biomedcentral.com/articles/10.1186/s13195-018-0362-2'
   }
 ]
@@ -142,21 +142,6 @@ export default function Home() {
     setStep((prev) => Math.min(prev + 1, 2))
   }
 
-  const handleEdit = () => {
-    setStep(0)
-    calculateRisk() // Recalculate when editing
-  }
-
-  const handleEditProbability = () => {
-    setStep(1)
-    calculateRisk() // Recalculate when editing
-  }
-
-  const handleEditTest = () => {
-    setStep(2)
-    calculateRisk() // Recalculate when editing
-  }
-
   const handleReset = () => {
     setStep(0)
     setAge("")
@@ -179,7 +164,7 @@ export default function Home() {
             <Image src="/logo.png" alt="Cogni" width={32} height={32} />
             <NavbarLabel className="text-[#2D5CF2] font-extrabold">Cogni</NavbarLabel>
             <div aria-hidden="true" className="mx-1 h-6 w-px bg-zinc-950/10 light:bg-white/10"></div>
-            <NavbarLabel className="text-[#404040]">Alzheimer's Disease Risk Calculator</NavbarLabel>
+            <NavbarLabel className="text-[#404040]">Alzheimer&apos;s Disease Risk Calculator</NavbarLabel>
           </NavbarItem>
           <NavbarItem className="ml-auto hidden md:block">
             <Button color="light" onClick={() => window.location.href = 'mailto:sf1123@ic.ac.uk'}>Send feedback</Button>
@@ -191,7 +176,7 @@ export default function Home() {
       <div className="space-y-8">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <p className="text-sm text-yellow-800">
-            Important Notice: This tool is intended to help indicate whether biomarkers for Alzheimer's disease would be clinically helpful. It is designed for educational purposes only and is not approved for clinical use in patients. The results should not be used to make clinical decisions.
+            Important Notice: This tool is intended to help indicate whether biomarkers for Alzheimer&apos;s disease would be clinically helpful. It is designed for educational purposes only and is not approved for clinical use in patients. The results should not be used to make clinical decisions.
           </p>
         </div>
 
@@ -233,7 +218,7 @@ export default function Home() {
         <div className="space-y-4 md:flex md:space-y-0 md:space-x-8">
           {/* Step 1: Patient Age */}
           <div className="md:flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Patient's Age</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Patient&apos;s Age</label>
             {step > 0 ? (
               <div className="relative flex h-10 w-full">
                 <input
@@ -269,7 +254,7 @@ export default function Home() {
             {step >= 1 && (
               <>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Clinical assessment of Alzheimer's disease probability
+                  Clinical assessment of Alzheimer&apos;s disease probability
                 </label>
                 {step === 1 ? (
                   <div className="space-y-2">
@@ -376,8 +361,8 @@ export default function Home() {
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
                     {calculationDetails.positiveProbability >= 0.95 
-                      ? 'This result is sufficient to confidently confirm Alzheimer\'s disease (using threshold of 95%)'
-                      : 'This result is not sufficient to confidently confirm Alzheimer\'s disease (using threshold of 95%)'
+                      ? 'This result is sufficient to confidently confirm Alzheimer&apos;s disease (using threshold of 95%)'
+                      : 'This result is not sufficient to confidently confirm Alzheimer&apos;s disease (using threshold of 95%)'
                     }
                   </p>
                 </div>
@@ -389,8 +374,8 @@ export default function Home() {
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
                     {calculationDetails.negativeProbability <= 0.015
-                      ? 'This result is sufficient to confidently rule out Alzheimer\'s disease (using threshold of 1.5%)'
-                      : 'This result is not sufficient to confidently rule out Alzheimer\'s disease (using threshold of 1.5%)'
+                      ? 'This result is sufficient to confidently rule out Alzheimer&apos;s disease (using threshold of 1.5%)'
+                      : 'This result is not sufficient to confidently rule out Alzheimer&apos;s disease (using threshold of 1.5%)'
                     }
                   </p>
                 </div>
@@ -411,12 +396,12 @@ export default function Home() {
                                 type="number"
                                 value={tempPositiveLR}
                                 onChange={(e) => setTempPositiveLR(e.target.value)}
-                                className="w-20 border border-gray-300 rounded px-2 py-1"
+                                className="w-20 border border-gray-300 rounded px-2 py-1 text-black"
                               />
                               <Button color="blue" onClick={() => handleSaveLR("positive")}>Save</Button>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 text-black">
                               <span className="font-medium">{calculationDetails.positiveLR.toFixed(2)}</span>
                               <Button color="light" onClick={() => handleEditLR("positive")}>Edit</Button>
                             </div>
@@ -432,12 +417,12 @@ export default function Home() {
                                 type="number"
                                 value={tempNegativeLR}
                                 onChange={(e) => setTempNegativeLR(e.target.value)}
-                                className="w-20 border border-gray-300 rounded px-2 py-1"
+                                className="w-20 border border-gray-300 rounded px-2 py-1 text-black"
                               />
                               <Button color="blue" onClick={() => handleSaveLR("negative")}>Save</Button>
                             </div>
                           ) : (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 text-black">
                               <span className="font-medium">{calculationDetails.negativeLR.toFixed(2)}</span>
                               <Button color="light" onClick={() => handleEditLR("negative")}>Edit</Button>
                             </div>
@@ -469,7 +454,7 @@ export default function Home() {
                       <div className="bg-white p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-600">If Test is Positive:</span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 text-black">
                             <span className="font-medium">
                               {(calculationDetails.positiveProbability * 100).toFixed(1)}%
                             </span>
@@ -485,7 +470,7 @@ export default function Home() {
                       <div className="bg-white p-4 rounded-lg">
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-600">If Test is Negative:</span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 text-black">
                             <span className="font-medium">
                               {(calculationDetails.negativeProbability * 100).toFixed(1)}%
                             </span>
@@ -506,7 +491,7 @@ export default function Home() {
                     <div className="space-y-2 text-sm text-gray-600">
                       <p>1. We start with the pre-test probability: {(calculationDetails.clinicalProbability * 100).toFixed(1)}%</p>
                       <p>2. Convert to odds: {(calculationDetails.clinicalProbability * 100).toFixed(1)}% / (1 - {(calculationDetails.clinicalProbability * 100).toFixed(1)}%)</p>
-                      <p>3. Multiply by the test's likelihood ratio: × {calculationDetails.positiveLR.toFixed(2)}</p>
+                      <p>3. Multiply by the test&apos;s likelihood ratio: × {calculationDetails.positiveLR.toFixed(2)}</p>
                       <p>4. Convert back to probability: odds / (1 + odds)</p>
                       <p className="mt-2">
                         This gives us the final probability of {(calculationDetails.positiveProbability * 100).toFixed(1)}% if the test is positive.
