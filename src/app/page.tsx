@@ -161,7 +161,7 @@ export default function Home() {
       navbar={
         <Navbar>
           <NavbarItem href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Cogni" width={32} height={32} />
+            <Image src="/logo.png" alt="Cogni" width={24} height={24} />
             <NavbarLabel className="text-[#2D5CF2] font-extrabold">Cogni</NavbarLabel>
             <div aria-hidden="true" className="mx-1 h-6 w-px bg-zinc-950/10 light:bg-white/10"></div>
             <NavbarLabel className="text-[#404040]">Alzheimer&apos;s Disease Risk Calculator</NavbarLabel>
