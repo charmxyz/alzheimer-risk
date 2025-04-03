@@ -617,11 +617,11 @@ export default function Home() {
         >
           <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Dialog.Panel className="mx-auto w-[75%] max-w-md rounded bg-white p-6">
+            <Dialog.Panel className="mx-auto w-full max-w-md rounded bg-white p-6">
               <Dialog.Title className="text-lg font-medium mb-4 text-black">
                 Population Risk by Age
               </Dialog.Title>
-              <div className="space-y-2">
+              <div className="space-y-2 overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
@@ -668,7 +668,7 @@ export default function Home() {
                 <Button 
                   color="dark" 
                   onClick={() => setIsPopupOpen(false)}
-                  className="bg-black text-white hover:bg-gray-800"
+                  className="w-full sm:w-auto bg-black text-white hover:bg-gray-800"
                 >
                   Close
                 </Button>
