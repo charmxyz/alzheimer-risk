@@ -21,7 +21,7 @@ const TEST_OPTIONS = [
     threshold: 0.067,
     positiveLR: 4.2,
     negativeLR: 0.2,
-    source: 'Based on performance relative to amyloid PET positivity, Baldeiras I, et al. (2018) - Alzheimer&apos;s Research & Therapy',
+    source: 'Based on performance relative to amyloid PET positivity, Baldeiras I, et al. (2018) - Alzheimers Research & Therapy',
     sourceUrl: 'https://alzres.biomedcentral.com/articles/10.1186/s13195-018-0362-2'
   }
 ]
@@ -54,6 +54,8 @@ export default function Home() {
   const [tempPositiveLR, setTempPositiveLR] = useState("")
   const [tempNegativeLR, setTempNegativeLR] = useState("")
   const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [isUserModified, setIsUserModified] = useState(false)
+  const [originalLR, setOriginalLR] = useState<{positive: number, negative: number} | null>(null)
 
   const getBaselineProbability = (age: number): number => {
     if (age <= 64) return 0.9;
@@ -89,6 +91,15 @@ export default function Home() {
     const test = TEST_OPTIONS.find(t => t.name === calculationDetails.testName)
     if (!test) return
 
+    // Store original values if this is the first modification
+    if (!isUserModified) {
+      setOriginalLR({
+        positive: test.positiveLR,
+        negative: test.negativeLR
+      })
+      setIsUserModified(true)
+    }
+
     const clinicalProb = probability / 100
     const positiveProb = type === "positive" 
       ? calculatePostTestProbability(clinicalProb, newLR)
@@ -107,6 +118,30 @@ export default function Home() {
       negativeChange: negativeProb - clinicalProb
     })
     setEditingLR(null)
+  }
+
+  const resetLRValues = () => {
+    if (!calculationDetails || !originalLR) return
+    
+    const test = TEST_OPTIONS.find(t => t.name === calculationDetails.testName)
+    if (!test) return
+
+    const clinicalProb = probability / 100
+    const positiveProb = calculatePostTestProbability(clinicalProb, originalLR.positive)
+    const negativeProb = calculatePostTestProbability(clinicalProb, originalLR.negative)
+
+    setCalculationDetails({
+      ...calculationDetails,
+      positiveLR: originalLR.positive,
+      negativeLR: originalLR.negative,
+      positiveProbability: positiveProb,
+      negativeProbability: negativeProb,
+      positiveChange: positiveProb - clinicalProb,
+      negativeChange: negativeProb - clinicalProb
+    })
+    
+    setIsUserModified(false)
+    setOriginalLR(null)
   }
 
   const calculateRisk = () => {
@@ -164,7 +199,7 @@ export default function Home() {
             <Image src="/logo.png" alt="Cogni" width={24} height={24} />
             <NavbarLabel className="text-[#2D5CF2] font-extrabold">Cogni</NavbarLabel>
             <div aria-hidden="true" className="mx-1 h-6 w-px bg-zinc-950/10 light:bg-white/10"></div>
-            <NavbarLabel className="text-[#404040]">Alzheimer&apos;s Disease Risk Calculator</NavbarLabel>
+            <NavbarLabel className="text-[#404040]">Alzheimers Disease Risk Calculator</NavbarLabel>
           </NavbarItem>
           <NavbarItem className="ml-auto hidden md:block">
             <Button color="light" onClick={() => window.location.href = 'mailto:sf1123@ic.ac.uk'}>Send feedback</Button>
@@ -176,7 +211,7 @@ export default function Home() {
       <div className="space-y-8">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <p className="text-sm text-yellow-800">
-            Important Notice: This tool is intended to help indicate whether biomarkers for Alzheimer&apos;s disease would be clinically helpful. It is designed for educational purposes only and is not approved for clinical use in patients. The results should not be used to make clinical decisions.
+            Important Notice: This tool is intended to help indicate whether biomarkers for Alzheimers disease would be clinically helpful. It is designed for educational purposes only and is not approved for clinical use in patients. The results should not be used to make clinical decisions.
           </p>
         </div>
 
@@ -218,7 +253,7 @@ export default function Home() {
         <div className="space-y-4 md:flex md:space-y-0 md:space-x-8">
           {/* Step 1: Patient Age */}
           <div className="md:flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Patient&apos;s Age</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Patient Age</label>
             {step > 0 ? (
               <div className="relative flex h-10 w-full">
                 <input
@@ -254,7 +289,7 @@ export default function Home() {
             {step >= 1 && (
               <>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Clinical assessment of Alzheimer&apos;s disease probability
+                  Clinical assessment of Alzheimers disease probability
                 </label>
                 {step === 1 ? (
                   <div className="space-y-2">
@@ -361,8 +396,8 @@ export default function Home() {
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
                     {calculationDetails.positiveProbability >= 0.95 
-                      ? 'This result is sufficient to confidently confirm Alzheimer&apos;s disease (using threshold of 95%)'
-                      : 'This result is not sufficient to confidently confirm Alzheimer&apos;s disease (using threshold of 95%)'
+                      ? "This result is sufficient to confidently confirm Alzheimers disease (using threshold of 95%)"
+                      : "This result is not sufficient to confidently confirm Alzheimers disease (using threshold of 95%)"
                     }
                   </p>
                 </div>
@@ -374,10 +409,71 @@ export default function Home() {
                   </div>
                   <p className="text-sm text-gray-600 mt-2">
                     {calculationDetails.negativeProbability <= 0.015
-                      ? 'This result is sufficient to confidently rule out Alzheimer&apos;s disease (using threshold of 1.5%)'
-                      : 'This result is not sufficient to confidently rule out Alzheimer&apos;s disease (using threshold of 1.5%)'
+                      ? "This result is sufficient to confidently rule out Alzheimers disease (using threshold of 1.5%)"
+                      : "This result is not sufficient to confidently rule out Alzheimers disease (using threshold of 1.5%)"
                     }
                   </p>
+                </div>
+              </div>
+
+              {/* Visual Probability Slider */}
+              <div className="w-full px-4 py-6 mb-12">
+                <div className="relative w-full h-2 bg-gray-200 rounded-full">
+                  {/* Clinical Risk Marker */}
+                  <div 
+                    className="absolute h-4 w-1 bg-blue-500 rounded-full -mt-1"
+                    style={{ 
+                      left: `${calculationDetails.clinicalProbability * 100}%`,
+                      transform: 'translateX(-50%)'
+                    }}
+                  >
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-blue-500">
+                      Clinical
+                    </div>
+                  </div>
+
+                  {/* Negative Result Marker */}
+                  <div 
+                    className="absolute h-4 w-1 bg-red-500 rounded-full -mt-1"
+                    style={{ 
+                      left: `${calculationDetails.negativeProbability * 100}%`,
+                      transform: 'translateX(-50%)'
+                    }}
+                  >
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-red-500">
+                      Negative
+                    </div>
+                  </div>
+
+                  {/* Positive Result Marker */}
+                  <div 
+                    className="absolute h-4 w-1 bg-green-500 rounded-full -mt-1"
+                    style={{ 
+                      left: `${calculationDetails.positiveProbability * 100}%`,
+                      transform: 'translateX(-50%)'
+                    }}
+                  >
+                    <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-green-500">
+                      Positive
+                    </div>
+                  </div>
+
+                  {/* Scale markers */}
+                  <div className="absolute w-full flex justify-between text-xs text-gray-400 mt-6">
+                    <span>0%</span>
+                    <span>25%</span>
+                    <span>50%</span>
+                    <span>75%</span>
+                    <span>100%</span>
+                  </div>
+                  
+                  {/* Corner labels */}
+                  <div className="absolute -left-2 top-10 text-xs text-gray-500 font-medium">
+                    Definitely absent
+                  </div>
+                  <div className="absolute -right-2 top-10 text-xs text-gray-500 font-medium">
+                    Definitely present
+                  </div>
                 </div>
               </div>
 
@@ -435,13 +531,15 @@ export default function Home() {
                         <span className="text-sm text-gray-600">Source</span>
                         <div className="flex items-center gap-2">
                           <span className="text-sm text-gray-600">
-                            {TEST_OPTIONS.find(t => t.name === calculationDetails.testName)?.source}
+                            {isUserModified 
+                              ? "User change manually likelyhood ratio value" 
+                              : TEST_OPTIONS.find(t => t.name === calculationDetails.testName)?.source}
                           </span>
                           <Button 
                             color="light" 
-                            onClick={() => window.open(TEST_OPTIONS.find(t => t.name === calculationDetails.testName)?.sourceUrl, '_blank')}
+                            onClick={isUserModified ? resetLRValues : () => window.open(TEST_OPTIONS.find(t => t.name === calculationDetails.testName)?.sourceUrl, '_blank')}
                           >
-                            Visit
+                            {isUserModified ? "Reset LR value" : "Visit"}
                           </Button>
                         </div>
                       </div>
@@ -491,7 +589,7 @@ export default function Home() {
                     <div className="space-y-2 text-sm text-gray-600">
                       <p>1. We start with the pre-test probability: {(calculationDetails.clinicalProbability * 100).toFixed(1)}%</p>
                       <p>2. Convert to odds: {(calculationDetails.clinicalProbability * 100).toFixed(1)}% / (1 - {(calculationDetails.clinicalProbability * 100).toFixed(1)}%)</p>
-                      <p>3. Multiply by the test&apos;s likelihood ratio: × {calculationDetails.positiveLR.toFixed(2)}</p>
+                      <p>3. Multiply by the test likelihood ratio: × {calculationDetails.positiveLR.toFixed(2)}</p>
                       <p>4. Convert back to probability: odds / (1 + odds)</p>
                       <p className="mt-2">
                         This gives us the final probability of {(calculationDetails.positiveProbability * 100).toFixed(1)}% if the test is positive.
